@@ -7,6 +7,7 @@ Este projeto é uma API RESTful desenvolvida em Laravel para simulação de cré
 - [Requisitos](#requisitos)
 - [Instalação](#instalação)
 - [Executando o Projeto](#executando-o-projeto)
+- [Configuração Sem Banco de Dados](#configuração-sem-banco-de-dados)
 - [Rotas Disponíveis](#rotas-disponíveis)
 - [Documentação Swagger](#documentação-swagger)
 - [Exemplos de Requisições](#exemplos-de-requisições)
@@ -41,6 +42,7 @@ composer install
 cp .env.example .env
 ```
 
+
 4. Configure o arquivo `.env` com a seguinte variável para o Swagger:
 
 ```
@@ -62,6 +64,33 @@ php artisan serve
 ```
 
 A API estará disponível em: http://localhost:8000
+
+## Configuração Sem Banco de Dados
+
+Esta API foi projetada para funcionar com dados mockados sem necessidade de banco de dados. Se você estiver enfrentando erros relacionados ao banco de dados, siga estas etapas:
+
+1. Abra o arquivo `.env` e altere as seguintes configurações:
+
+```
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+QUEUE_CONNECTION=sync
+```
+
+2. Se você ainda encontrar erros relacionados ao banco de dados, crie o arquivo de configuração do cache:
+
+```bash
+mkdir -p bootstrap/cache
+touch bootstrap/cache/.gitignore
+```
+
+3. Limpe o cache de configuração:
+
+```bash
+php artisan config:clear
+```
+
+Isso deve permitir que a API funcione sem necessidade de configurar um banco de dados.
 
 ## Rotas Disponíveis
 
@@ -235,6 +264,24 @@ Se encontrar algum problema ao executar o projeto, verifique:
 2. Se o arquivo `.env` está corretamente configurado
 3. Se o Swagger está configurado corretamente
 
+### Erros 500 ou relacionados a banco de dados
+
+Se você estiver recebendo erros 500 ao testar a API no Postman ou no navegador:
+
+1. Certifique-se de ter seguido as instruções na seção [Configuração Sem Banco de Dados](#configuração-sem-banco-de-dados)
+2. Verifique os logs de erro em `storage/logs/laravel.log` para identificar o problema específico
+3. Se persistir o problema, tente:
+
+```bash
+# Limpar o cache da aplicação
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+
+# Regenerar o autoload do Composer
+composer dump-autoload
+```
+
 Para problemas relacionados à documentação Swagger:
 
 ```bash
@@ -253,4 +300,4 @@ Para contribuir com o projeto:
 2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)
 3. Faça commit das suas alterações (`git commit -m 'Adiciona nova funcionalidade'`)
 4. Envie para a branch (`git push origin feature/nova-funcionalidade`)
-5. Abra um Pull Request 
+5. Abra um Pull Request
