@@ -1,0 +1,374 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API de Simulação de Crédito",
+    "description": "API para simulação de crédito com diferentes instituições e convênios",
+    "contact": {
+      "email": "contato@exemplo.com",
+      "name": "Suporte API"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api/v1",
+      "description": "API Server"
+    }
+  ],
+  "paths": {
+    "/convenios": {
+      "get": {
+        "tags": [
+          "Convênios"
+        ],
+        "summary": "Lista todos os convênios disponíveis",
+        "description": "Retorna a lista completa de convênios que podem ser utilizados para simulação de crédito",
+        "operationId": "getConvenios",
+        "responses": {
+          "200": {
+            "description": "Lista de convênios retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Convenio"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/convenios/{id}": {
+      "get": {
+        "tags": [
+          "Convênios"
+        ],
+        "summary": "Busca um convênio pelo ID",
+        "description": "Retorna os dados de um convênio específico identificado pelo ID",
+        "operationId": "getConvenioById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID do convênio",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Convênio encontrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Convenio"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Convênio não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Convênio não encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/instituicoes": {
+      "get": {
+        "tags": [
+          "Instituições"
+        ],
+        "summary": "Lista todas as instituições financeiras disponíveis",
+        "description": "Retorna a lista completa de instituições financeiras que podem ser utilizadas para simulação de crédito",
+        "operationId": "getInstituicoes",
+        "responses": {
+          "200": {
+            "description": "Lista de instituições retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Instituicao"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/instituicoes/{id}": {
+      "get": {
+        "tags": [
+          "Instituições"
+        ],
+        "summary": "Busca uma instituição financeira pelo ID",
+        "description": "Retorna os dados de uma instituição financeira específica identificada pelo ID",
+        "operationId": "getInstituicaoById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID da instituição",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Instituição encontrada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Instituicao"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Instituição não encontrada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Instituição não encontrada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      }
+    },
+    "/simulacao-credito": {
+      "post": {
+        "tags": [
+          "Simulação de Crédito"
+        ],
+        "summary": "Realiza uma simulação de crédito",
+        "description": "Recebe os parâmetros para simulação e retorna as opções de crédito disponíveis",
+        "operationId": "simularCredito",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "valor_emprestimo"
+                ],
+                "properties": {
+                  "valor_emprestimo": {
+                    "type": "number",
+                    "format": "float",
+                    "description": "Valor do empréstimo desejado",
+                    "example": 5000
+                  },
+                  "instituicoes": {
+                    "type": "array",
+                    "description": "Lista de instituições para filtrar (opcional)",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "banco1",
+                      "banco2"
+                    ]
+                  },
+                  "convenios": {
+                    "type": "array",
+                    "description": "Lista de convênios para filtrar (opcional)",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "conv1",
+                      "conv2"
+                    ]
+                  },
+                  "parcela": {
+                    "type": "integer",
+                    "description": "Número de parcelas desejado (opcional)",
+                    "example": 12
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Simulação realizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SimulacaoCredito"
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Erro na validação dos dados",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Os dados fornecidos são inválidos"
+                    },
+                    "errors": {
+                      "type": "object",
+                      "properties": {
+                        "valor_emprestimo": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "O valor do empréstimo é obrigatório"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Convenio": {
+        "title": "Convênio",
+        "description": "Modelo de convênio para simulação de crédito",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador único do convênio",
+            "example": "INSS"
+          },
+          "valor": {
+            "type": "string",
+            "description": "Nome do convênio",
+            "example": "Instituto Nacional do Seguro Social"
+          }
+        },
+        "type": "object"
+      },
+      "Instituicao": {
+        "title": "Instituição",
+        "description": "Modelo de instituição financeira para simulação de crédito",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identificador único da instituição",
+            "example": "BC001"
+          },
+          "valor": {
+            "type": "string",
+            "description": "Nome da instituição financeira",
+            "example": "Banco X"
+          }
+        },
+        "type": "object"
+      },
+      "SimulacaoCredito": {
+        "title": "Simulação de Crédito",
+        "description": "Resultado de uma simulação de crédito",
+        "properties": {
+          "instituicao": {
+            "type": "string",
+            "description": "Nome da instituição financeira",
+            "example": "Banco X"
+          },
+          "convenio": {
+            "type": "string",
+            "description": "Nome do convênio",
+            "example": "INSS"
+          },
+          "parcelas": {
+            "type": "integer",
+            "description": "Número de parcelas da simulação",
+            "example": 12
+          },
+          "taxaJuros": {
+            "type": "number",
+            "format": "float",
+            "description": "Taxa de juros mensal aplicada",
+            "example": 1.99
+          },
+          "valorParcela": {
+            "type": "number",
+            "format": "float",
+            "description": "Valor de cada parcela",
+            "example": 458.33
+          },
+          "valorTotal": {
+            "type": "number",
+            "format": "float",
+            "description": "Valor total a ser pago",
+            "example": 5500
+          },
+          "valorEmprestimo": {
+            "type": "number",
+            "format": "float",
+            "description": "Valor do empréstimo solicitado",
+            "example": 5000
+          }
+        },
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+} 
