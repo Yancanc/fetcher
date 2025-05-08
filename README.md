@@ -10,6 +10,7 @@ Este projeto é uma API RESTful desenvolvida em Laravel para simulação de cré
 - [Rotas Disponíveis](#rotas-disponíveis)
 - [Documentação Swagger](#documentação-swagger)
 - [Exemplos de Requisições](#exemplos-de-requisições)
+- [Autenticação](#autenticação)
 - [Testes](#testes)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 
@@ -155,6 +156,34 @@ curl -X POST http://localhost:8000/api/v1/simulacao-credito \
     "valorEmprestimo": 5000.00
   }
 ]
+```
+
+## Autenticação
+
+Para simplificação de testes, esta API não requer nenhum tipo de autenticação ou chave API. Em um ambiente de produção, seria recomendado implementar um método de autenticação como JWT ou OAuth2.
+
+### Exemplo de Autenticação com Bearer Token
+
+Em uma implementação real, a autenticação seria feita da seguinte forma:
+
+**Requisição com Bearer Token:**
+```bash
+curl -X GET http://localhost:8000/api/v1/convenios \
+  -H "Authorization: Bearer seu_token_aqui"
+```
+
+Ou para uma requisição POST:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/simulacao-credito \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer seu_token_aqui" \
+  -d '{
+    "valor_emprestimo": 5000,
+    "instituicoes": ["banco1", "banco2"],
+    "convenios": ["INSS"],
+    "parcela": 12
+  }'
 ```
 
 ## Testes
